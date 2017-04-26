@@ -15,5 +15,9 @@ node {
     } catch (e) {
         currentBuild.result = "FAILED"
         throw e;
+    } finally {
+        stage('Archive Test Output') {
+            archiveArtifacts artifacts: '**/test_output/'
+        }
     }
 }
