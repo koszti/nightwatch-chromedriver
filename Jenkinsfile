@@ -3,7 +3,6 @@ node {
 
     try {
         stage('Checkout') {
-            jobStarted()
             checkout scm
         }
         wrap([$class: 'Xvfb']) {
@@ -13,7 +12,6 @@ node {
                 }
             }
         }
-        jobSuccessful()
     } catch (e) {
         currentBuild.result = "FAILED"
         throw e;
