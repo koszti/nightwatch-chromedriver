@@ -4,7 +4,7 @@
   "description": "Headless UI tests with nightwatch.js and chromedriver",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nightwatch"
   },
   "repository": {
     "type": "git",
