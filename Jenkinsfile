@@ -7,7 +7,7 @@ node {
         }
         stage('Cleanup') {
             echo("Cleanup")
-            sh('rm -f tests_output')
+            sh('rm -rf tests_output')
         }
         wrap([$class: 'Xvfb']) {
             stage('Integration tests') {
