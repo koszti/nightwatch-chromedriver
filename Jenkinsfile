@@ -5,6 +5,10 @@ node {
         stage('Checkout') {
             checkout scm
         }
+        stage('Cleanup') {
+            echo("Cleanup")
+            sh('rm -f tests_output')
+        }
         wrap([$class: 'Xvfb']) {
             stage('Integration tests') {
                 withEnv(["PATH+VNODE=/var/jenkins_home/.nvm/versions/node/v6.9.4/bin"]) {
