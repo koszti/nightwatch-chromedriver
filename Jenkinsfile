@@ -17,7 +17,7 @@ node {
         throw e;
     } finally {
         stage('Archive Test Output') {
-            archiveArtifacts artifacts: '**/test_output/'
+            archiveArtifacts artifacts: 'tests_output/'
         }
     }
 }
