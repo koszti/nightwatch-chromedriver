@@ -38,3 +38,6 @@ jspm_packages
 
 # Nightwatch.js tests output
 tests_output
+
+# BrowserMod Proxy log
+bmp.log

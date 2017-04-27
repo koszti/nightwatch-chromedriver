@@ -3,6 +3,9 @@
     "test"
   ],
   "globals_path": "./globals.js",
+  "custom_commands_path": "./commands",
+  "custom_assertions_path": "./assertions",
+  
   "selenium" : {
     "start_process" : false
   },
@@ -24,7 +27,12 @@
         "chromeOptions": {
           "args": ["--no-sandbox"]
         },
-        "acceptSslCerts": true
+        "acceptSslCerts": true,
+        "proxy": {
+          "proxyType": "manual",
+          "httpProxy": "localhost:10800",
+          "sslProxy": "localhost:10800"
+        }
       }
     }
   }
