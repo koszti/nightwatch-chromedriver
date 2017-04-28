@@ -14,7 +14,7 @@ Parameters:
 | ------------- | ------------- | ------------------------------------ |
 | bmProxy       | object        | BrowserMob Proxy instance            |
 | event         | string        | The name of the event you’re testing |
-| options       | object        | Extra options:  ***validatePayload***: Whether or not the payload should validate against the corresponding JSON schema. Default is TRUE.     |
+| options       | object        | Extra options:  ***validatePayload***: Whether or not the payload should validate against the corresponding JSON schema. Default is TRUE. Valid schemas are defined in `assertions/payload-schemas` directory. |
 
 Check working example in `test/quidco-analytics.js`.
 
