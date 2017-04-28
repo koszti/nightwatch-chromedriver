@@ -23,10 +23,10 @@ module.exports = {
       // TODO: replace pause commands to something else
       .pause(2000)
       .assert.containsText('#search-results-multiple-retailers-title', 'Search results for hotels')
-      .pause(1000)
+      .pause(2000)
 
       // Check if the segment API request sent correctly
-      .assert.segmentTrackRequestSent(proxyApi, BMP_PROXY_PORT, harPageRef, 'Merchant Search Results Viewed')
+      .assert.segmentTrackRequestSent(proxyApi, BMP_PROXY_PORT, harPageRef, 'Merchant Search Results Viewed', { validatePayload: true })
       .end();
   },
 };

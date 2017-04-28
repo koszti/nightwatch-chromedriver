@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/koszti/nightwatch-chromedriver#readme",
   "dependencies": {
+    "ajv": "^5.0.0",
     "browsermob-proxy-api": "^0.3.2",
     "chromedriver": "^2.29.0",
     "nightwatch": "^0.9.14"

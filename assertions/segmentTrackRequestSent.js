@@ -1,5 +1,22 @@
-exports.assertion = function (proxyApi, proxyPort, harPageRef, eventName, msg = null) {
-  this.message = msg || `Testing if segment API call sent <${eventName}>.`;
+const Ajv = require('ajv');
+const msrv = require('./payload-schemas/merchant-search-results-viewed');
+
+const ajv = new Ajv();
+
+function getPayloadSchemaByEventName(eventName) {
+  let schema;
+
+  switch (eventName) {
+    case 'Merchant Search Results Viewed': schema = msrv.getSchema(); break;
+    default: throw new Error(`<${eventName}> payload cannot be validated because the schema is not implemented.`);
+  }
+
+  return schema;
+}
+
+
+exports.assertion = function (proxyApi, proxyPort, harPageRef, eventName, options = {}) {
+  this.message = `Testing if segment API call sent <${eventName}>.`;
   this.expected = true;
 
   this.pass = value => value === this.expected;
@@ -18,11 +35,21 @@ exports.assertion = function (proxyApi, proxyPort, harPageRef, eventName, msg = 
 
               // Find Segment track requests only on the required HAR page
               if (entry.pageref === harPageRef && entry.request.url.indexOf('api.segment.io/v1/t') > -1) {
-                const segmentPayloadJson = entry.request.postData.text;
+                // Get the payload body of the HTTP POST Request
+                const payload = JSON.parse(entry.request.postData.text);
 
                 // Check if segment request is the one that we are looking after
-                if (JSON.parse(segmentPayloadJson).event === eventName) {
-                  isEventInScope = true;
+                if (payload.event === eventName) {
+                  // Validate the entire payload request against a JSON schema
+                  if (options.validatePayload) {
+                    if (ajv.validate(getPayloadSchemaByEventName(eventName), payload)) {
+                      isEventInScope = true;
+                    } else {
+                      throw new Error(`Invalid payload body sent to Segment. ${ajv.errorsText()}\n${JSON.stringify(payload)}`);
+                    }
+                  } else {
+                    isEventInScope = true;
+                  }
                 }
               }
               return isEventInScope;
