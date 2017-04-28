@@ -1,8 +1,11 @@
 const fs = require('fs');
 
-exports.command = function (proxyApi, proxyPort, filename) {
+// Default options
+const DEFAULT_BM_PROXY_PORT = 10800;
+
+exports.command = function (bmProxyApi, filename, options = {}) {
   this.perform(() => {
-    proxyApi.getHAR(proxyPort, (err, data) => {
+    bmProxyApi.getHAR(options.bmProxyPort || DEFAULT_BM_PROXY_PORT, (err, data) => {
       if (!err) {
         fs.writeFile(filename, data, (fsErr) => {
           if (err) {

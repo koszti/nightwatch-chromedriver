@@ -1,6 +1,9 @@
-exports.command = function (proxyApi, proxyPort, pageRef) {
+// Default options
+const DEFAULT_BM_PROXY_PORT = 10800;
+
+exports.command = function (bmProxyApi, pageRef, options = {}) {
   this.perform(() => {
-    proxyApi.startNewPage(proxyPort, pageRef, () => {});
+    bmProxyApi.startNewPage(options.bmProxyPort || DEFAULT_BM_PROXY_PORT, pageRef, () => {});
   });
 
   return this;

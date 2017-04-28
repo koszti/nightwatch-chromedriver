@@ -4,22 +4,22 @@ const MobProxy = require('browsermob-proxy-api');
 // BrowswerMob Proxy standalone REST API (has to run individually)
 const BMP_API_HOST = 'localhost';
 const BMP_API_PORT = 8888;
-const proxy = new MobProxy({ host: BMP_API_HOST, port: BMP_API_PORT });
+const bmProxyApi = new MobProxy({ host: BMP_API_HOST, port: BMP_API_PORT });
 
 // BrowserMob Proxy instance will listen on this port.
 // Every chromedriver request will go through on this
 // proxy to capture and analyse network traffic
-const BMP_PROXY_PORT = 10800;
+const BM_PROXY_PORT = 10800;
 
 
 module.exports = {
   // External before hook is ran at the beginning of the tests run
   before(done) {
     // BrowserMob Proxy is used to analyse network traffic with segment API calls
-    console.log(`Creating BrowserMob Proxy instance on port ${BMP_PROXY_PORT}...`);
-    proxy.startPort(BMP_PROXY_PORT, (err) => {
+    console.log(`Creating BrowserMob Proxy instance on port ${BM_PROXY_PORT}...`);
+    bmProxyApi.startPort(BM_PROXY_PORT, (err) => {
       if (!err) {
-        proxy.createHAR(BMP_PROXY_PORT, { initialPageRef: 'Nightwach.js Setup', captureContent: true, captureHeaders: true });
+        bmProxyApi.createHAR(BM_PROXY_PORT, { initialPageRef: 'Nightwach.js Setup', captureContent: true, captureHeaders: true });
         console.log('Starting chromedriver...');
         chromedriver.start();
 
@@ -37,8 +37,8 @@ module.exports = {
     console.log('Stopping chromedriver...');
     chromedriver.stop();
 
-    console.log(`Stopping BrowserMob Proxy instance on port ${BMP_PROXY_PORT}...`);
-    proxy.stopPort(BMP_PROXY_PORT, () => {});
+    console.log(`Stopping BrowserMob Proxy instance on port ${BM_PROXY_PORT}...`);
+    bmProxyApi.stopPort(BM_PROXY_PORT, () => {});
 
     done();
   },

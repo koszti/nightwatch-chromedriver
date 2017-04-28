@@ -3,6 +3,10 @@ const msrv = require('./payload-schemas/merchant-search-results-viewed');
 
 const ajv = new Ajv();
 
+// Default options
+const DEFAULT_BM_PROXY_PORT = 10800;
+const DEFAULT_VALIDATE_PAYLOAD = true;
+
 function getPayloadSchemaByEventName(eventName) {
   let schema;
 
@@ -15,8 +19,8 @@ function getPayloadSchemaByEventName(eventName) {
 }
 
 
-exports.assertion = function (proxyApi, proxyPort, harPageRef, eventName, options = {}) {
-  this.message = `Testing if segment API call sent <${eventName}>.`;
+exports.assertion = function (bmProxyApi, eventName, options = {}) {
+  this.message = `Testing if segment API call sent <${eventName}> on HAR page <${options.harPageRef}>.`;
   this.expected = true;
 
   this.pass = value => value === this.expected;
@@ -25,7 +29,7 @@ exports.assertion = function (proxyApi, proxyPort, harPageRef, eventName, option
   this.command = function (callback) {
     this.api.perform(() => {
       // Get the HAR file from BrowserMob that contains every network traffic log
-      proxyApi.getHAR(proxyPort, (err, data) => {
+      bmProxyApi.getHAR(options.bmProxyPort || DEFAULT_BM_PROXY_PORT, (err, data) => {
         if (!err) {
           callback.call(this,
 
@@ -34,21 +38,19 @@ exports.assertion = function (proxyApi, proxyPort, harPageRef, eventName, option
               let isEventInScope = false;
 
               // Find Segment track requests only on the required HAR page
-              if (entry.pageref === harPageRef && entry.request.url.indexOf('api.segment.io/v1/t') > -1) {
+              if ((!options.harPageRef || entry.pageref === options.harPageRef) && entry.request.url.indexOf('api.segment.io/v1/t') > -1) {
                 // Get the payload body of the HTTP POST Request
                 const payload = JSON.parse(entry.request.postData.text);
 
                 // Check if segment request is the one that we are looking after
                 if (payload.event === eventName) {
-                  // Validate the entire payload request against a JSON schema
-                  if (options.validatePayload) {
-                    if (ajv.validate(getPayloadSchemaByEventName(eventName), payload)) {
-                      isEventInScope = true;
-                    } else {
-                      throw new Error(`Invalid payload body sent to Segment. ${ajv.errorsText()}\n${JSON.stringify(payload)}`);
-                    }
-                  } else {
+                  // Validate the entire payload request against a JSON schema if enabled
+                  if (options.validatePayload === false
+                    || DEFAULT_VALIDATE_PAYLOAD === false
+                    || ajv.validate(getPayloadSchemaByEventName(eventName), payload)) {
                     isEventInScope = true;
+                  } else {
+                    throw new Error(`Invalid payload body sent to Segment. ${ajv.errorsText()}\n${JSON.stringify(payload)}`);
                   }
                 }
               }
