@@ -16,6 +16,7 @@ Parameters:
 | event         | string        | The name of the event you’re testing |
 | options       | object        | Extra options:  ***validatePayload***: Whether or not the payload should validate against the corresponding JSON schema. Default is TRUE.     |
 
+Check working example in `test/quidco-analytics.js`.
 
 ### How to run the tests?
 
