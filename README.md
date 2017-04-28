@@ -22,7 +22,7 @@ Check working example in `test/quidco-analytics.js`.
 
 Install Node.js and then:
 ```sh
-$ npm test
+$ npm install && npm test
 ```
 
 ### Bitbucket Pipelines Integration
